@@ -1,12 +1,14 @@
 import React, { useRef } from "react";
 import type { CSSProperties } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { ExternalLink } from "lucide-react";
 
 interface Company {
   name: string;
   id: string;
   color: string;
   logo: string;
+  url?: string;
   tagline?: string;
   preserveColor?: boolean;
   logoStyle?: CSSProperties;
@@ -19,6 +21,7 @@ const COMPANIES: Company[] = [
     tagline: "The Founders for the Founders",
     color: "#EAB308",
     logo: "/company_logos/foundarly.png",
+    url: "https://www.foundarlybusinessworld.in/",
     preserveColor: true,
     logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
   },
@@ -27,6 +30,7 @@ const COMPANIES: Company[] = [
     id: "atlaas",
     color: "#DC2626",
     logo: "/company_logos/atlaas.png",
+    url: "https://www.atlaas.in/",
     preserveColor: true,
     logoStyle: { width: "80px", height: "auto", maxHeight: "55px" },
   },
@@ -44,6 +48,7 @@ const COMPANIES: Company[] = [
     tagline: "By Aravind",
     color: "#059669",
     logo: "/company_logos/automatic_partners.png",
+    url: "https://automationpartner.in/",
     preserveColor: true,
     logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
   },
@@ -52,6 +57,7 @@ const COMPANIES: Company[] = [
     id: "accesco-living",
     color: "#C026D3",
     logo: "/company_logos/accesco_living.png",
+    url: "https://accescoliving.com/",
     preserveColor: true,
     logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
   },
@@ -64,6 +70,95 @@ const COMPANIES: Company[] = [
   { name: "Bitrix", id: "bitrix24", color: "#56C1FF", logo: "/company_logos/bitrix24.svg" },
 ];
 
+function CardInner({ company }: { company: Company }) {
+  return (
+    <>
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+        backgroundSize: "32px 32px",
+        pointerEvents: "none",
+      }} />
+
+      {company.url && (
+        <div style={{
+          position: "absolute",
+          top: "22px",
+          right: "22px",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          padding: "6px 14px",
+          borderRadius: "100px",
+          background: "rgba(255, 255, 255, 0.12)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(255, 255, 255, 0.25)",
+          color: "#fff",
+          fontSize: "0.8rem",
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 600,
+          letterSpacing: "0.03em",
+          pointerEvents: "none",
+        }}>
+          <span>Visit</span>
+          <ExternalLink size={13} />
+        </div>
+      )}
+
+      <div style={{
+        width: "100px", height: "100px",
+        background: "rgba(255,255,255,0.12)",
+        backdropFilter: "blur(12px)",
+        borderRadius: "24px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        marginBottom: "20px",
+        border: "1px solid rgba(255,255,255,0.25)",
+        padding: "10px",
+        overflow: "hidden",
+      }}>
+        <img
+          src={company.logo}
+          alt={company.name}
+          style={{
+            width: "55px",
+            height: "55px",
+            objectFit: "contain",
+            filter: company.preserveColor ? "none" : "brightness(0) invert(1)",
+            ...company.logoStyle,
+          }}
+        />
+      </div>
+
+      <h3 style={{
+        fontFamily: "'Inter', sans-serif",
+        fontWeight: 800,
+        fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
+        color: "#fff",
+        margin: 0,
+        letterSpacing: "-0.02em",
+        textAlign: "center",
+        padding: "0 20px",
+      }}>
+        {company.name}
+      </h3>
+
+      {company.tagline && (
+        <p style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 500,
+          fontSize: "0.95rem",
+          color: "rgba(255,255,255,0.75)",
+          margin: "8px 0 0",
+          letterSpacing: "0.02em",
+          textAlign: "center",
+        }}>
+          {company.tagline}
+        </p>
+      )}
+    </>
+  );
+}
+
 function Card({ company, index, totalCards, scrollYProgress }: { company: Company, index: number, totalCards: number, scrollYProgress: any }) {
   const rangeStart = index * (1 / totalCards);
   const rangeEnd = (index + 1) * (1 / totalCards);
@@ -71,6 +166,25 @@ function Card({ company, index, totalCards, scrollYProgress }: { company: Compan
   const scale = useTransform(scrollYProgress, [rangeStart, rangeEnd], [1, 0.95]);
 
   const isLast = index === totalCards - 1;
+
+  const cardStyle: any = {
+    scale: isLast ? 1 : scale,
+    width: "100%",
+    maxWidth: "800px",
+    height: "100%",
+    background: `linear-gradient(135deg, ${company.color} 0%, rgba(10,5,20,0.95) 100%)`,
+    borderRadius: "24px",
+    border: `1px solid ${company.color}40`,
+    boxShadow: `0 -10px 40px -10px ${company.color}20`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    transformOrigin: "top center",
+    overflow: "hidden",
+    position: "relative",
+    textDecoration: "none",
+  };
 
   return (
     <div
@@ -84,83 +198,22 @@ function Card({ company, index, totalCards, scrollYProgress }: { company: Compan
         marginBottom: "20vh",
       }}
     >
-      <motion.div
-        style={{
-          scale: isLast ? 1 : scale,
-          width: "100%",
-          maxWidth: "800px",
-          height: "100%",
-          background: `linear-gradient(135deg, ${company.color} 0%, rgba(10,5,20,0.95) 100%)`,
-          borderRadius: "24px",
-          border: `1px solid ${company.color}40`,
-          boxShadow: `0 -10px 40px -10px ${company.color}20`,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          transformOrigin: "top center",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
-          backgroundSize: "32px 32px",
-          pointerEvents: "none",
-        }} />
-
-        <div style={{
-          width: "100px", height: "100px",
-          background: "rgba(255,255,255,0.12)",
-          backdropFilter: "blur(12px)",
-          borderRadius: "24px",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          marginBottom: "20px",
-          border: "1px solid rgba(255,255,255,0.25)",
-          padding: "10px",
-          overflow: "hidden",
-        }}>
-          <img
-            src={company.logo}
-            alt={company.name}
-            style={{
-              width: "55px",
-              height: "55px",
-              objectFit: "contain",
-              filter: company.preserveColor ? "none" : "brightness(0) invert(1)",
-              ...company.logoStyle,
-            }}
-          />
-        </div>
-
-        <h3 style={{
-          fontFamily: "'Inter', sans-serif",
-          fontWeight: 800,
-          fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
-          color: "#fff",
-          margin: 0,
-          letterSpacing: "-0.02em",
-          textAlign: "center",
-          padding: "0 20px",
-        }}>
-          {company.name}
-        </h3>
-
-        {company.tagline && (
-          <p style={{
-            fontFamily: "'Inter', sans-serif",
-            fontWeight: 500,
-            fontSize: "0.95rem",
-            color: "rgba(255,255,255,0.75)",
-            margin: "8px 0 0",
-            letterSpacing: "0.02em",
-            textAlign: "center",
-          }}>
-            {company.tagline}
-          </p>
-        )}
-      </motion.div>
+      {company.url ? (
+        <motion.a
+          href={company.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ ...cardStyle, cursor: "pointer" }}
+          whileHover={{ scale: 1.015 }}
+          whileTap={{ scale: 0.985 }}
+        >
+          <CardInner company={company} />
+        </motion.a>
+      ) : (
+        <motion.div style={cardStyle}>
+          <CardInner company={company} />
+        </motion.div>
+      )}
     </div>
   );
 }
