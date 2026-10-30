@@ -1,7 +1,60 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
+import type { CSSProperties } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-const COMPANIES = [
+interface Company {
+  name: string;
+  id: string;
+  color: string;
+  logo: string;
+  tagline?: string;
+  preserveColor?: boolean;
+  logoStyle?: CSSProperties;
+}
+
+const COMPANIES: Company[] = [
+  {
+    name: "Foundarly",
+    id: "foundarly",
+    tagline: "The Founders for the Founders",
+    color: "#EAB308",
+    logo: "/company_logos/foundarly.png",
+    preserveColor: true,
+    logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
+  },
+  {
+    name: "Atlaas",
+    id: "atlaas",
+    color: "#DC2626",
+    logo: "/company_logos/atlaas.png",
+    preserveColor: true,
+    logoStyle: { width: "80px", height: "auto", maxHeight: "55px" },
+  },
+  {
+    name: "Jitender Khushi & Associates",
+    id: "jk-associates",
+    color: "#1E40AF",
+    logo: "/company_logos/jk.png",
+    preserveColor: true,
+    logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
+  },
+  {
+    name: "Automatic Partners",
+    id: "automatic-partners",
+    tagline: "By Aravind",
+    color: "#059669",
+    logo: "/company_logos/automatic_partners.png",
+    preserveColor: true,
+    logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
+  },
+  {
+    name: "Accesco Living",
+    id: "accesco-living",
+    color: "#C026D3",
+    logo: "/company_logos/accesco_living.png",
+    preserveColor: true,
+    logoStyle: { width: "70px", height: "70px", borderRadius: "50%" },
+  },
   { name: "Zoho", id: "zoho", color: "#E02E2E", logo: "/company_logos/zoho.svg" },
   { name: "Microsoft Teams", id: "microsoftteams", color: "#6264A7", logo: "/company_logos/microsoftteams.svg" },
   { name: "Microsoft 365", id: "microsoft365", color: "#D83B01", logo: "/company_logos/microsoft.svg" },
@@ -11,7 +64,7 @@ const COMPANIES = [
   { name: "Bitrix", id: "bitrix24", color: "#56C1FF", logo: "/company_logos/bitrix24.svg" },
 ];
 
-function Card({ company, index, totalCards, scrollYProgress }: { company: typeof COMPANIES[0], index: number, totalCards: number, scrollYProgress: any }) {
+function Card({ company, index, totalCards, scrollYProgress }: { company: Company, index: number, totalCards: number, scrollYProgress: any }) {
   const rangeStart = index * (1 / totalCards);
   const rangeEnd = (index + 1) * (1 / totalCards);
 
@@ -59,26 +112,54 @@ function Card({ company, index, totalCards, scrollYProgress }: { company: typeof
 
         <div style={{
           width: "100px", height: "100px",
-          background: "rgba(255,255,255,0.1)",
+          background: "rgba(255,255,255,0.12)",
           backdropFilter: "blur(12px)",
           borderRadius: "24px",
           display: "flex", alignItems: "center", justifyContent: "center",
-          marginBottom: "24px",
-          border: "1px solid rgba(255,255,255,0.2)"
+          marginBottom: "20px",
+          border: "1px solid rgba(255,255,255,0.25)",
+          padding: "10px",
+          overflow: "hidden",
         }}>
-          <img src={company.logo} alt={company.name} style={{ width: "50px", height: "50px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />
+          <img
+            src={company.logo}
+            alt={company.name}
+            style={{
+              width: "55px",
+              height: "55px",
+              objectFit: "contain",
+              filter: company.preserveColor ? "none" : "brightness(0) invert(1)",
+              ...company.logoStyle,
+            }}
+          />
         </div>
 
         <h3 style={{
           fontFamily: "'Inter', sans-serif",
           fontWeight: 800,
-          fontSize: "2.5rem",
+          fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
           color: "#fff",
           margin: 0,
-          letterSpacing: "-0.02em"
+          letterSpacing: "-0.02em",
+          textAlign: "center",
+          padding: "0 20px",
         }}>
           {company.name}
         </h3>
+
+        {company.tagline && (
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 500,
+            fontSize: "0.95rem",
+            color: "rgba(255,255,255,0.75)",
+            margin: "8px 0 0",
+            letterSpacing: "0.02em",
+            textAlign: "center",
+          }}>
+            {company.tagline}
+          </p>
+        )}
       </motion.div>
     </div>
   );
